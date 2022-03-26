@@ -1,5 +1,6 @@
 package firstSpring.practice.practice.domain.posts;
 
+import firstSpring.practice.practice.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import javax.persistence.Id;
 @NoArgsConstructor //위의 두개는 lombok, 얘는 기본 생성자 자동 추가. public Posts() {}와 같은 효과.
 @Entity // JPA annotation
 
-public class Posts { // 실제 DB와 매칭될 클래스, 직접 쿼리 날리는 것이 아닌 entity 수정을 통해 작업
+public class Posts extends BaseTimeEntity { // 실제 DB와 매칭될 클래스, 직접 쿼리 날리는 것이 아닌 entity 수정을 통해 작업
     @Id // 해당 테이블의 PK, 가능한 pk는 long type, auto_increment : mysql ~ bigint
     @GeneratedValue(strategy = GenerationType.IDENTITY) // PK 생성 규칙
     private Long id;
@@ -32,6 +33,11 @@ public class Posts { // 실제 DB와 매칭될 클래스, 직접 쿼리 날리�
         this.title = title;
         this.content = content;
         this.author = author;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 } // 기본적으로 entity 클래스에서는 setter 생성 X, 필드 값 변경이 필요하면 목적과 의도를 나타내는 메소드를 추가해야 함.
 // 생성자를 통해 최종 값 채운 후 DB에 삽입, 해당 이벤트에 맞는 public 메소드 호출.
