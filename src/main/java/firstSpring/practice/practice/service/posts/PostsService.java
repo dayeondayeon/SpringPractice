@@ -1,12 +1,15 @@
 package firstSpring.practice.practice.service.posts;
 import firstSpring.practice.practice.domain.posts.Posts;
 import firstSpring.practice.practice.domain.posts.PostsRepository;
+import firstSpring.practice.practice.web.dto.PostsListResponseDto;
 import firstSpring.practice.practice.web.dto.PostsResponseDto;
 import firstSpring.practice.practice.web.dto.PostsSaveRequestDto;
 import firstSpring.practice.practice.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +31,20 @@ public class PostsService {
     public PostsResponseDto findById (Long id) {
         Posts entity = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id="+id));
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true) // 트랜잭션 범위는 유지하되, 조회 기능만 남겨두어 속도 향상. 등록, 수정, 삭제 전혀 없는 메소드에서 사용 추천.
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new) // posts -> new PostsListResponseDto(posts))의 람다식.
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete (Long id) {
+        Posts posts = postsRepository.findById(id) // 존재하는지 먼저 확인
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        postsRepository.delete(posts); // deleteById(id)로 바로 삭제도 가능. 엔티티를 파라미터로 주는것도 가능.
     }
 }
 // jpa : 영속성 컨텍스트 (엔티티를 영구 저장하는 환경)
