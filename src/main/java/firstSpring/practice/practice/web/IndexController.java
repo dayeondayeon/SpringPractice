@@ -20,7 +20,7 @@ public class IndexController {
     public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
         if (user != null) {
-            model.addAttribute("username", user.getName());
+            model.addAttribute("userName", user.getName());
         }
         return "index"; // 문자열을 반환할 때 앞의 경로, 뒤 확장자는 자동지정됨.
         // 즉, src/main/resources/templates 까지는 자동, return 문의 index, 그 뒤 다시 자동으로 .mustache 확장자
